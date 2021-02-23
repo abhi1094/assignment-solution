@@ -1,11 +1,6 @@
-KEY=bucket
+read -p 'Instance id:' instanceId
 
-apt-get update
-apt-get install -y python-pip
-pip install -U pip
-pip install awscli
+aws ec2 describe-instances --instance-ids $instanceId --output json > ec2Instance-metadata.json
 
-INSTANCE_ID=$(ec2metadata --instance-id)
-REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}')
-
-TAG_VALUE=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=$KEY" --region=$REGION --output=text | cut -f5)
+#For Specific Field, we need to use --query parameter and pass the key in Query 
+aws ec2 describe-instances --query 'Reservations[*].Instances[*].{Instance:InstanceId, PrivateIpAddress:PrivateIpAddress, AZ:Placement.AvailabilityZone}'  --output json > ec2Specific-metadata.json
