@@ -1,5 +1,5 @@
 function getObjectKeys(o, k) {
-    const keys = k.split('.');
+    const keys = k.split('/');
     let obj = o;
     for (let ikey of keys) {
         for (let [objKey, value] of Object.entries(obj)) {
